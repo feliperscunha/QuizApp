@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.quizapp.auth.FirebaseAuthRepository
-import com.example.quizapp.data.TodoRepositoryImpl
+import com.example.quizapp.data.firebase.TodoRepositoryImpl
 import com.example.quizapp.ui.UIEvent
 import com.example.quizapp.ui.theme.QuizAppTheme
 import com.google.firebase.auth.FirebaseAuth

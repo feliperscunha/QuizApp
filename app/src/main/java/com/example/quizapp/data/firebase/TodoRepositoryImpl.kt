@@ -1,4 +1,4 @@
-package com.example.quizapp.data
+package com.example.quizapp.data.firebase
 
 import com.example.quizapp.domain.Todo
 import com.google.firebase.database.DataSnapshot

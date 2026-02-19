@@ -3,7 +3,7 @@ package com.example.quizapp.ui.feature.list
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quizapp.data.TodoRepository
+import com.example.quizapp.data.firebase.TodoRepository
 import com.example.quizapp.navigation.AddEditRoute
 import com.example.quizapp.navigation.LoginRoute
 import com.example.quizapp.ui.UIEvent

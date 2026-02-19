@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quizapp.auth.FirebaseAuthRepository
-import com.example.quizapp.data.TodoRepository
+import com.example.quizapp.data.firebase.TodoRepository
 import com.example.quizapp.ui.UIEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

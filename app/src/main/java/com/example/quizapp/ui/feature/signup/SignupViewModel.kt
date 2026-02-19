@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quizapp.data.TodoRepository
 import com.example.quizapp.navigation.ListRoute
 import com.example.quizapp.navigation.LoginRoute
 import com.example.quizapp.ui.UIEvent

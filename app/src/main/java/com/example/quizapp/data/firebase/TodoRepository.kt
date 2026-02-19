@@ -1,4 +1,4 @@
-package com.example.quizapp.data
+package com.example.quizapp.data.firebase
 
 import com.example.quizapp.domain.Todo
 import kotlinx.coroutines.flow.Flow
