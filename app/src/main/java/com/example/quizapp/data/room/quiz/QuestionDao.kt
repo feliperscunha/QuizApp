@@ -13,12 +13,9 @@ interface QuestionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert (entity: QuestionEntity)
 
-    @Delete
-    suspend fun delete (entity: QuestionEntity)
-
     @Query("SELECT * FROM questions ORDER BY id ASC")
     fun getAll(): Flow<List<QuestionEntity>>
 
     @Query("SELECT * FROM questions WHERE id = :id")
-    suspend fun getBy (id: Long): QuestionEntity?
+    suspend fun getBy (id: String): QuestionEntity?
 }

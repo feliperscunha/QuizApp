@@ -17,5 +17,5 @@ interface HistoryDao {
     fun getAll(): Flow<List<HistoryEntity>>
 
     @Query("SELECT * FROM questions WHERE id = :id")
-    suspend fun getBy (id: Long): HistoryEntity?
+    suspend fun getBy (id: String): HistoryEntity?
 }

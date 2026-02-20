@@ -1,17 +1,13 @@
 package com.example.quizapp.data.room.quiz
 
-import com.example.quizapp.domain.Todo
+import com.example.quizapp.domain.Question
 import kotlinx.coroutines.flow.Flow
 
 interface QuestionRepository {
 
-    suspend fun insert (title: String, description: String?, id: Long? = null)
+    suspend fun insert(question: Question)
 
-    suspend fun updateCompleted(id: Long, isCompleted: Boolean)
+    fun getAll(): Flow<List<Question>>
 
-    suspend fun delete (id: Long)
-
-    fun getAll(): Flow<List<Todo>>
-
-    suspend fun getBy (id: Long): Todo?
+    suspend fun getBy(id: String): Question?
 }
