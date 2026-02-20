@@ -6,6 +6,7 @@ plugins {
 
     kotlin("plugin.serialization") version libs.versions.kotlin
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -42,6 +43,9 @@ android {
     buildFeatures {
         compose = true
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
@@ -58,6 +62,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation(libs.core.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
