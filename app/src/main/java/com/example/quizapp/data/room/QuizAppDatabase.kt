@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.quizapp.data.room.history.HistoryDao
 import com.example.quizapp.data.room.quiz.QuestionDao
 import com.example.quizapp.data.room.quiz.QuestionEntity
 import com.example.quizapp.data.room.user.UserDao
@@ -17,6 +18,7 @@ abstract class QuizAppDatabase : RoomDatabase() {
 
     abstract val questionDao: QuestionDao
     abstract val userDao: UserDao
+    abstract val historyDao: HistoryDao
 }
 
 object UserDatabaseProvider {

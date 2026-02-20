@@ -1,17 +1,15 @@
 package com.example.quizapp.data.room.user
 
-import com.example.quizapp.domain.Todo
+import com.example.quizapp.domain.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    suspend fun insert (title: String, description: String?, id: Long? = null)
+    suspend fun insert(id: String, email: String)
 
-    suspend fun updateCompleted(id: Long, isCompleted: Boolean)
+    suspend fun delete(id: String)
 
-    suspend fun delete (id: Long)
+    fun getAll(): Flow<List<User>>
 
-    fun getAll(): Flow<List<Todo>>
-
-    suspend fun getBy (id: Long): Todo?
+    suspend fun getBy(id: String): User?
 }

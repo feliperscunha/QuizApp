@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "questions")
 data class QuestionEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val quizId: Long,
+    @PrimaryKey val id: String = java.util.UUID.randomUUID().toString(),
+    val quizId: String,
     val title: String,
     val subtitle: String,
     val question: String,
