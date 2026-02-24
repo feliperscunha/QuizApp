@@ -24,7 +24,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.quizapp.navigation.ListRoute
+import com.example.quizapp.data.room.UserDatabaseProvider
+import com.example.quizapp.navigation.HomeRoute
 import com.example.quizapp.navigation.SignupRoute
 import com.example.quizapp.ui.UIEvent
 import androidx.compose.foundation.rememberScrollState
@@ -36,8 +37,11 @@ fun LoginScreen(
     navigateToListScreen: () -> Unit,
     navigateToSignupScreen: () -> Unit
 ) {
+    val context = LocalContext.current
+    val database = UserDatabaseProvider.provide(context)
+
     val viewModel = viewModel<LoginViewModel> {
-        LoginViewModel()
+        LoginViewModel(database)
     }
 
     val email = viewModel.email
@@ -61,7 +65,7 @@ fun LoginScreen(
                         is SignupRoute -> {
                             navigateToSignupScreen()
                         }
-                        is ListRoute -> {
+                        is HomeRoute -> {
                             navigateToListScreen()
                         }
                     }

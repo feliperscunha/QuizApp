@@ -24,10 +24,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.quizapp.navigation.ListRoute
+import com.example.quizapp.data.room.UserDatabaseProvider
+import com.example.quizapp.navigation.HomeRoute
 import com.example.quizapp.navigation.LoginRoute
 import com.example.quizapp.ui.UIEvent
-import com.example.quizapp.ui.feature.signup.SignupViewModel
 
 
 @Composable
@@ -35,8 +35,11 @@ fun SignupScreen (
     navigateToListScreen: () -> Unit,
     navigateToLoginScreen: () -> Unit
 ) {
+    val context = LocalContext.current
+    val database = UserDatabaseProvider.provide(context)
+
     val viewModel = viewModel<SignupViewModel> {
-        SignupViewModel()
+        SignupViewModel(database)
     }
 
     val email = viewModel.email
@@ -60,7 +63,7 @@ fun SignupScreen (
                         is LoginRoute -> {
                             navigateToLoginScreen()
                         }
-                        is ListRoute -> {
+                        is HomeRoute -> {
                             navigateToListScreen()
                         }
                     }
