@@ -120,7 +120,7 @@ class LoginViewModel(
             val userId = auth.currentUser?.uid ?: return
 
             // Initialize Firebase repositories
-            val firebaseDb = FirebaseDatabase.getInstance()
+            val firebaseDb = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
             val firebaseQuizRepo = QuizRepositoryImpl(firebaseDb)
             val firebaseHistoryRepo = HistoryRepositoryImpl(firebaseDb)
 

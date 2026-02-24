@@ -7,7 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quizapp.data.firebase.history.HistoryRepository
+import com.example.quizapp.data.firebase.user.UserInfoRepository
 import com.example.quizapp.ui.UIEvent
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -22,25 +24,72 @@ class LeaderboardViewModel(
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    private val userInfoRepository = UserInfoRepository(
+        FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
+    )
+
     init {
         loadLeaderboard()
     }
 
     private fun loadLeaderboard() {
         viewModelScope.launch {
-            // Get all histories from Firebase
-            // Group by userId and calculate statistics
             try {
-                // Since we need all user histories, we'll need to query the Firebase database
-                // For now, we'll use a simplified approach
-                // In a production app, you'd want to have a separate leaderboard collection
+                historyRepository.getAll().collect { histories ->
+                    // Group histories by userId
+                    val userStatsWithoutUsername = histories.groupBy { it.userId }
+                        .map { (userId, userHistories) ->
+                            val totalScore = userHistories.sumOf { it.score }
+                            val quizzesTaken = userHistories.size
+                            val averageScore = if (quizzesTaken > 0) {
+                                totalScore.toDouble() / quizzesTaken
+                            } else {
+                                0.0
+                            }
 
-                // This is a placeholder - you'll need to implement a way to get all histories
-                // from all users in your Firebase structure
-                val entries = listOf<LeaderboardEntry>()
-                leaderboard = entries
+                            // Calcula o tempo médio em segundos
+                            val totalTime = userHistories.sumOf { it.time }
+                            val averageTime = if (quizzesTaken > 0) {
+                                totalTime / quizzesTaken
+                            } else {
+                                0.0
+                            }
+
+                            Triple(userId, LeaderboardEntry(
+                                userId = userId,
+                                username = "", // Será preenchido depois
+                                totalScore = totalScore,
+                                quizzesTaken = quizzesTaken,
+                                averageScore = averageScore,
+                                averageTime = averageTime,
+                                rank = 0
+                            ), userHistories)
+                        }
+
+                    // Busca usernames para cada usuário
+                    val userStatsWithUsername = userStatsWithoutUsername.map { (userId, entry, _) ->
+                        try {
+                            val userInfo = userInfoRepository.getUserInfo(userId)
+                            entry.copy(username = userInfo.username)
+                        } catch (e: Exception) {
+                            Log.w("LeaderboardViewModel", "Failed to get username for $userId", e)
+                            entry.copy(username = "Usuário ${userId.take(4)}")
+                        }
+                    }
+
+                    // Ordena por pontuação total e atribui ranks
+                    val sortedStats = userStatsWithUsername
+                        .sortedByDescending { it.totalScore }
+                        .mapIndexed { index, entry ->
+                            entry.copy(rank = index + 1)
+                        }
+
+                    leaderboard = sortedStats
+                    Log.d("LeaderboardViewModel", "Loaded ${sortedStats.size} users in leaderboard")
+                }
             } catch (e: Exception) {
                 Log.e("LeaderboardViewModel", "Error loading leaderboard", e)
+                leaderboard = emptyList()
             }
         }
     }

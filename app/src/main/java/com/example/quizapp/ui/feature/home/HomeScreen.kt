@@ -45,7 +45,9 @@ fun HomeScreen(
     navigateToLeaderboard: () -> Unit,
     navigateToLogin: () -> Unit
 ) {
-    val repository = QuizRepositoryImpl(db = FirebaseDatabase.getInstance())
+
+    val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
+    val repository = QuizRepositoryImpl(db = db)
     val viewModel = viewModel<HomeViewModel> {
         HomeViewModel(quizRepository = repository)
     }

@@ -35,6 +35,40 @@ class HistoryRepositoryImpl(
         db.reference.child("history").child(userId).child(id).removeValue().await()
     }
 
+    override fun getAll(): Flow<List<History>> {
+        val ref = db.reference.child("history")
+        return callbackFlow {
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val histories = mutableListOf<History>()
+                    // Iterate through all users
+                    snapshot.children.forEach { userSnapshot ->
+                        // Get all history entries for each user
+                        userSnapshot.children.mapNotNull {
+                            it.getValue(HistoryEntity::class.java)
+                        }.forEach { entity ->
+                            histories.add(History(
+                                id = entity.id,
+                                quizId = entity.quizId,
+                                userId = entity.userId,
+                                score = entity.score,
+                                time = entity.time,
+                                date = entity.date
+                            ))
+                        }
+                    }
+                    trySend(histories).isSuccess
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    close(error.toException())
+                }
+            }
+            ref.addValueEventListener(listener)
+            awaitClose { ref.removeEventListener(listener) }
+        }
+    }
+
     override fun getAllByUser(userId: String): Flow<List<History>> {
         val ref = db.reference.child("history").child(userId)
         return callbackFlow {

@@ -40,7 +40,8 @@ import com.google.firebase.database.FirebaseDatabase
 fun HistoryScreen(
     navigateBack: () -> Unit
 ) {
-    val repository = HistoryRepositoryImpl(db = FirebaseDatabase.getInstance())
+    val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
+    val repository = HistoryRepositoryImpl(db = db)
     val viewModel = viewModel<HistoryViewModel> {
         HistoryViewModel(historyRepository = repository)
     }

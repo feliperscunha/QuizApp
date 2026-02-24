@@ -9,6 +9,8 @@ interface HistoryRepository {
 
     suspend fun delete(id: String, userId: String)
 
+    fun getAll(): Flow<List<History>>
+
     fun getAllByUser(userId: String): Flow<List<History>>
 
     fun getAllByQuiz(quizId: String): Flow<List<History>>

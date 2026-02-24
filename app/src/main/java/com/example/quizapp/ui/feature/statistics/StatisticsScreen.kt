@@ -34,7 +34,8 @@ import com.google.firebase.database.FirebaseDatabase
 fun StatisticsScreen(
     navigateBack: () -> Unit
 ) {
-    val repository = HistoryRepositoryImpl(db = FirebaseDatabase.getInstance())
+    val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
+    val repository = HistoryRepositoryImpl(db = db)
     val viewModel = viewModel<StatisticsViewModel> {
         StatisticsViewModel(historyRepository = repository)
     }

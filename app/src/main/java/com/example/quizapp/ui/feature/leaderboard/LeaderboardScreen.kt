@@ -38,12 +38,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.quizapp.data.firebase.history.HistoryRepositoryImpl
 import com.example.quizapp.ui.UIEvent
 import com.google.firebase.database.FirebaseDatabase
+import java.util.Locale
 
 @Composable
 fun LeaderboardScreen(
     navigateBack: () -> Unit
 ) {
-    val repository = HistoryRepositoryImpl(db = FirebaseDatabase.getInstance())
+    val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
+    val repository = HistoryRepositoryImpl(db = db)
     val viewModel = viewModel<LeaderboardViewModel> {
         LeaderboardViewModel(historyRepository = repository)
     }
@@ -139,7 +141,7 @@ fun LeaderboardCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Rank indicator
+            // Rank indicator (medalha)
             val rankColor = when (rank) {
                 1 -> Color(0xFFFFD700) // Gold
                 2 -> Color(0xFFC0C0C0) // Silver
@@ -165,30 +167,51 @@ fun LeaderboardCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // User info
+            // User info (username e estatísticas)
             Column(modifier = Modifier.weight(1f)) {
+                // Nome do usuário
                 Text(
-                    text = "User ${entry.userId.take(8)}",
+                    text = entry.username,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Número de quizzes realizados
                 Text(
-                    text = "${entry.quizzesTaken} quizzes taken",
+                    text = "📝 ${entry.quizzesTaken} quizzes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Tempo médio
+                Text(
+                    text = "⏱️ ${String.format(Locale.getDefault(), "%.1f", entry.averageTime)}s",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Média de acertos
+                Text(
+                    text = "✓ ${String.format(Locale.getDefault(), "%.1f", entry.averageScore)} pts",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            // Score info
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Score total (destaque)
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = entry.totalScore.toString(),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = String.format("Avg: %.1f", entry.averageScore),
+                    text = "pontos",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

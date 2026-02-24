@@ -41,7 +41,29 @@ class QuizRepositoryImpl(
         return callbackFlow {
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val quizzes = snapshot.children.mapNotNull { it.getValue(QuizEntity::class.java) }
+                    android.util.Log.d("QuizRepository", "=== Firebase Data Debug ===")
+                    android.util.Log.d("QuizRepository", "Snapshot exists: ${snapshot.exists()}")
+                    android.util.Log.d("QuizRepository", "Children count: ${snapshot.childrenCount}")
+                    android.util.Log.d("QuizRepository", "Raw value: ${snapshot.value}")
+
+                    snapshot.children.forEachIndexed { index, childSnapshot ->
+                        android.util.Log.d("QuizRepository", "Child $index key: ${childSnapshot.key}")
+                        android.util.Log.d("QuizRepository", "Child $index value: ${childSnapshot.value}")
+                    }
+
+                    val quizzes = snapshot.children.mapNotNull {
+                        try {
+                            val entity = it.getValue(QuizEntity::class.java)
+                            android.util.Log.d("QuizRepository", "Parsed entity: $entity")
+                            entity
+                        } catch (e: Exception) {
+                            android.util.Log.e("QuizRepository", "Error parsing quiz entity from ${it.key}", e)
+                            null
+                        }
+                    }
+
+                    android.util.Log.d("QuizRepository", "Total quizzes parsed: ${quizzes.size}")
+
                     val domainQuizzes = quizzes.map { entity ->
                         Quiz(
                             id = entity.id,
@@ -56,10 +78,13 @@ class QuizRepositoryImpl(
                             }
                         )
                     }
+
+                    android.util.Log.d("QuizRepository", "Sending ${domainQuizzes.size} quizzes to UI")
                     trySend(domainQuizzes).isSuccess
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    android.util.Log.e("QuizRepository", "Firebase error: ${error.message}", error.toException())
                     close(error.toException())
                 }
             }

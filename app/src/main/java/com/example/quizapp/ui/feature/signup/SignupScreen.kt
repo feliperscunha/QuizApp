@@ -43,6 +43,7 @@ fun SignupScreen (
     }
 
     val email = viewModel.email
+    val username = viewModel.username
     val password = viewModel.password
     val loading = viewModel.loading
 
@@ -74,6 +75,7 @@ fun SignupScreen (
 
     SignupContent (
         email,
+        username,
         password,
         loading,
         snackbarHostState,
@@ -84,6 +86,7 @@ fun SignupScreen (
 @Composable
 fun SignupContent(
     email: String,
+    username: String,
     password: String,
     loading: Boolean,
     snackbarHostState: SnackbarHostState,
@@ -102,11 +105,25 @@ fun SignupContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Signup Page",
+                text = "Criar Conta",
                 fontSize = 32.sp
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextField(
+                value = username,
+                onValueChange = {
+                    onEvent(
+                        SignupEvent.UsernameChanged(it)
+                    )
+                },
+                placeholder = {
+                    Text("Nome de usuário")
+                },
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = email,
@@ -130,7 +147,7 @@ fun SignupContent(
                     )
                 },
                 placeholder = {
-                    Text("Password")
+                    Text("Senha")
                 },
             )
 
@@ -142,7 +159,7 @@ fun SignupContent(
                 },
                 enabled = !loading
             ) {
-                Text(text = "Register")
+                Text(text = "Cadastrar")
             }
 
             TextButton(
@@ -150,7 +167,7 @@ fun SignupContent(
                     onEvent(SignupEvent.NavigateToLogin)
                 }
             ) {
-                Text(text = "Already have an account? Login")
+                Text(text = "Já tem uma conta? Fazer login")
             }
         }
     }
@@ -161,7 +178,8 @@ fun SignupContent(
 private fun SignupContentPreview() {
     QuizAppTheme {
         SignupContent (
-            email = "teste@gmail",
+            email = "teste@gmail.com",
+            username = "Teste",
             password = "123456",
             loading = false,
             snackbarHostState = SnackbarHostState(),

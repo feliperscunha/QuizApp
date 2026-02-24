@@ -29,6 +29,9 @@ class SignupViewModel(
 
     private val auth : FirebaseAuth = FirebaseAuth.getInstance()
 
+    var username by mutableStateOf("")
+        private set
+
     var email by mutableStateOf("")
         private set
 
@@ -43,6 +46,9 @@ class SignupViewModel(
 
     fun onEvent(event: SignupEvent) {
         when (event) {
+            is SignupEvent.UsernameChanged -> {
+                username = event.username
+            }
             is SignupEvent.EmailChanged -> {
                 email = event.email
             }
@@ -69,20 +75,33 @@ class SignupViewModel(
         loading = true
         viewModelScope.launch {
             try {
+                if (username.isBlank()) {
+                    _uiEvent.send(UIEvent.ShowSnackBar(
+                        message = "O nome de usuário não pode estar vazio"
+                    ))
+                    return@launch
+                }
+
                 if (email.isBlank()) {
                     _uiEvent.send(UIEvent.ShowSnackBar(
-                        message = "The email can\'t be empty"
+                        message = "O email não pode estar vazio"
                     ))
                     return@launch
                 }
 
                 if (password.isBlank()) {
                     _uiEvent.send(UIEvent.ShowSnackBar(
-                        message = "The password can\'t be empty"
+                        message = "A senha não pode estar vazia"
                     ))
                     return@launch
                 }
+
+                // Criar usuário no Firebase Auth
                 auth.createUserWithEmailAndPassword(email, password).await()
+
+                // Salvar informações do usuário no Firebase Database
+                val userId = auth.currentUser?.uid ?: return@launch
+                saveUserToFirebase(userId, email, username)
 
                 // Sync data from Firebase to Room for offline access
                 syncDataAfterSignup()
@@ -90,11 +109,29 @@ class SignupViewModel(
                 _uiEvent.send(UIEvent.Navigate(HomeRoute))
             } catch (e: Exception) {
                 _uiEvent.send(UIEvent.ShowSnackBar(
-                    message = e.message ?: "Something went wrong, please try again."
+                    message = e.message ?: "Algo deu errado, tente novamente."
                 ))
             } finally {
                 loading = false
             }
+        }
+    }
+
+    private suspend fun saveUserToFirebase(userId: String, email: String, username: String) {
+        try {
+            val firebaseDb = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
+            val userRepo = com.example.quizapp.data.firebase.user.UserRepositoryImpl(firebaseDb)
+
+            val user = com.example.quizapp.domain.User(
+                id = userId,
+                email = email,
+                username = username
+            )
+
+            userRepo.insert(user)
+            Log.d("SignupViewModel", "User saved to Firebase: $username")
+        } catch (e: Exception) {
+            Log.e("SignupViewModel", "Error saving user to Firebase", e)
         }
     }
 
@@ -108,7 +145,7 @@ class SignupViewModel(
             val userId = auth.currentUser?.uid ?: return
 
             // Initialize Firebase repositories
-            val firebaseDb = FirebaseDatabase.getInstance()
+            val firebaseDb = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
             val firebaseQuizRepo = QuizRepositoryImpl(firebaseDb)
             val firebaseHistoryRepo = HistoryRepositoryImpl(firebaseDb)
 

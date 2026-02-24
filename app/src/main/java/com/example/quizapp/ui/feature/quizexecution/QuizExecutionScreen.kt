@@ -45,8 +45,9 @@ fun QuizExecutionScreen(
     quizId: String,
     navigateBack: () -> Unit
 ) {
-    val quizRepository = QuizRepositoryImpl(db = FirebaseDatabase.getInstance())
-    val historyRepository = HistoryRepositoryImpl(db = FirebaseDatabase.getInstance())
+    val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
+    val quizRepository = QuizRepositoryImpl(db = db)
+    val historyRepository = HistoryRepositoryImpl(db = db)
 
     val viewModel = viewModel<QuizExecutionViewModel> {
         QuizExecutionViewModel(
