@@ -5,14 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.quizapp.data.room.history.HistoryDao
+import com.example.quizapp.data.room.history.HistoryEntity
 import com.example.quizapp.data.room.quiz.QuestionDao
 import com.example.quizapp.data.room.quiz.QuestionEntity
 import com.example.quizapp.data.room.user.UserDao
 import com.example.quizapp.data.room.user.UserEntity
 
 @Database(
-    entities = [UserEntity::class, QuestionEntity::class],
-    version = 1
+    entities = [UserEntity::class, QuestionEntity::class, HistoryEntity::class],
+    version = 2
 )
 abstract class QuizAppDatabase : RoomDatabase() {
 

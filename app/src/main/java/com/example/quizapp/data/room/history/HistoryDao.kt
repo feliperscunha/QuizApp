@@ -13,9 +13,9 @@ interface HistoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert (entity: HistoryEntity)
 
-    @Query("SELECT * FROM questions ORDER BY id ASC")
+    @Query("SELECT * FROM history ORDER BY id ASC")
     fun getAll(): Flow<List<HistoryEntity>>
 
-    @Query("SELECT * FROM questions WHERE id = :id")
+    @Query("SELECT * FROM history WHERE id = :id")
     suspend fun getBy (id: String): HistoryEntity?
 }
