@@ -190,7 +190,7 @@ fun LeaderboardCard(
                 )
 
                 Text(
-                    text = "✓ ${String.format(Locale.getDefault(), "%.1f", entry.totalScore)} pts",
+                    text = "✓ ${String.format(Locale.getDefault(), "%d", entry.totalScore)} pts",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
