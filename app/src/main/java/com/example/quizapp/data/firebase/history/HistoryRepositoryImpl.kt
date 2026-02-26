@@ -41,9 +41,9 @@ class HistoryRepositoryImpl(
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val histories = mutableListOf<History>()
-                    // Iterate through all users
+
                     snapshot.children.forEach { userSnapshot ->
-                        // Get all history entries for each user
+
                         userSnapshot.children.mapNotNull {
                             it.getValue(HistoryEntity::class.java)
                         }.forEach { entity ->
@@ -103,9 +103,9 @@ class HistoryRepositoryImpl(
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val histories = mutableListOf<History>()
-                    // Iterate through all users
+
                     snapshot.children.forEach { userSnapshot ->
-                        // Get all history entries for each user
+
                         userSnapshot.children.mapNotNull {
                             it.getValue(HistoryEntity::class.java)
                         }.filter {

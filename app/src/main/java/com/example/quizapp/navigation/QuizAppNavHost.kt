@@ -46,7 +46,6 @@ fun QuizAppNavHost() {
             LoginScreen (
                 navigateToListScreen = {
                     navController.navigate(HomeRoute) {
-                        // Limpa toda a pilha de navegação ao fazer login
                         popUpTo(LoginRoute) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -61,7 +60,6 @@ fun QuizAppNavHost() {
             SignupScreen (
                 navigateToListScreen = {
                     navController.navigate(HomeRoute) {
-                        // Limpa toda a pilha de navegação ao fazer signup
                         popUpTo(LoginRoute) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -87,7 +85,6 @@ fun QuizAppNavHost() {
                     navController.navigate(LeaderboardRoute)
                 },
                 navigateToLogin = {
-                    // Limpa toda a pilha de navegação ao fazer logout
                     navController.navigate(LoginRoute) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true

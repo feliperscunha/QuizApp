@@ -88,7 +88,6 @@ class QuizExecutionViewModel(
         viewModelScope.launch {
             val currentQuiz = quiz ?: return@launch
 
-            // Calculate score
             var correctAnswers = 0
             currentQuiz.questions.forEachIndexed { index, question ->
                 if (selectedAnswers[index] == question.correct) {
@@ -97,11 +96,9 @@ class QuizExecutionViewModel(
             }
             score = correctAnswers
 
-            // Calculate time taken in seconds
             val endTime = System.currentTimeMillis()
             val timeTaken = (endTime - startTime) / 1000.0
 
-            // Save to history
             val userId = auth.currentUser?.uid ?: ""
             val history = History(
                 id = "",

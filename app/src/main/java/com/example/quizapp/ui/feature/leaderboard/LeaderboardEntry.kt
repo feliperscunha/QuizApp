@@ -6,7 +6,7 @@ data class LeaderboardEntry(
     val totalScore: Int,
     val quizzesTaken: Int,
     val averageScore: Double,
-    val averageTime: Double, // Tempo médio em segundos
+    val averageTime: Double,
     val rank: Int
 )
 

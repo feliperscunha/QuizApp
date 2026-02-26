@@ -9,9 +9,6 @@ import com.example.quizapp.data.room.user.UserRepository as RoomUserRepository
 import com.example.quizapp.domain.Question
 import kotlinx.coroutines.flow.first
 
-/**
- * Repository responsible for syncing data from Firebase to Room for offline support
- */
 class SyncRepository(
     private val firebaseQuizRepository: FirebaseQuizRepository,
     private val firebaseHistoryRepository: FirebaseHistoryRepository,
@@ -24,7 +21,6 @@ class SyncRepository(
         try {
             val quizzes = firebaseQuizRepository.getAll().first()
 
-            // Clear existing questions and insert new ones
             quizzes.forEach { quiz ->
                 quiz.questions.forEachIndexed { index, quizQuestion ->
                     val question = Question(

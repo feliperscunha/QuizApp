@@ -39,7 +39,7 @@ class HomeViewModel(
                 auth.signOut()
             }
             else -> {
-                // Navigation events handled in the screen
+
             }
         }
     }

@@ -141,11 +141,11 @@ fun LeaderboardCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Rank indicator (medalha)
+
             val rankColor = when (rank) {
-                1 -> Color(0xFFFFD700) // Gold
-                2 -> Color(0xFFC0C0C0) // Silver
-                3 -> Color(0xFFCD7F32) // Bronze
+                1 -> Color(0xFFFFD700)
+                2 -> Color(0xFFC0C0C0)
+                3 -> Color(0xFFCD7F32)
                 else -> MaterialTheme.colorScheme.primary
             }
 
@@ -167,9 +167,8 @@ fun LeaderboardCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // User info (username e estatísticas)
             Column(modifier = Modifier.weight(1f)) {
-                // Nome do usuário
+
                 Text(
                     text = entry.username,
                     style = MaterialTheme.typography.titleMedium,
@@ -178,21 +177,18 @@ fun LeaderboardCard(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Número de quizzes realizados
                 Text(
                     text = "📝 ${entry.quizzesTaken} quizzes",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                // Tempo médio
                 Text(
                     text = "⏱️ ${String.format(Locale.getDefault(), "%.1f", entry.averageTime)}s",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                // Média de acertos
                 Text(
                     text = "✓ ${String.format(Locale.getDefault(), "%.1f", entry.averageScore)} pts",
                     style = MaterialTheme.typography.bodySmall,
@@ -202,7 +198,6 @@ fun LeaderboardCard(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Score total (destaque)
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = entry.totalScore.toString(),

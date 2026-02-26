@@ -12,10 +12,6 @@ data class UserInfo(
 class UserInfoRepository(
     private val db: FirebaseDatabase
 ) {
-    /**
-     * Busca o username do usuário do Firebase Database
-     * Se não encontrar, retorna username genérico
-     */
     suspend fun getUserInfo(userId: String): UserInfo {
         return try {
             val snapshot = db.reference.child("users").child(userId).get().await()

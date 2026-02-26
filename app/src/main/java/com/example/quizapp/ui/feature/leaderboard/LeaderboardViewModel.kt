@@ -36,7 +36,7 @@ class LeaderboardViewModel(
         viewModelScope.launch {
             try {
                 historyRepository.getAll().collect { histories ->
-                    // Group histories by userId
+
                     val userStatsWithoutUsername = histories.groupBy { it.userId }
                         .map { (userId, userHistories) ->
                             val totalScore = userHistories.sumOf { it.score }
@@ -47,7 +47,6 @@ class LeaderboardViewModel(
                                 0.0
                             }
 
-                            // Calcula o tempo médio em segundos
                             val totalTime = userHistories.sumOf { it.time }
                             val averageTime = if (quizzesTaken > 0) {
                                 totalTime / quizzesTaken
@@ -66,7 +65,7 @@ class LeaderboardViewModel(
                             ), userHistories)
                         }
 
-                    // Busca usernames para cada usuário
+
                     val userStatsWithUsername = userStatsWithoutUsername.map { (userId, entry, _) ->
                         try {
                             val userInfo = userInfoRepository.getUserInfo(userId)
@@ -77,7 +76,6 @@ class LeaderboardViewModel(
                         }
                     }
 
-                    // Ordena por pontuação total e atribui ranks
                     val sortedStats = userStatsWithUsername
                         .sortedByDescending { it.totalScore }
                         .mapIndexed { index, entry ->

@@ -96,14 +96,11 @@ class SignupViewModel(
                     return@launch
                 }
 
-                // Criar usuário no Firebase Auth
                 auth.createUserWithEmailAndPassword(email, password).await()
 
-                // Salvar informações do usuário no Firebase Database
                 val userId = auth.currentUser?.uid ?: return@launch
                 saveUserToFirebase(userId, email, username)
 
-                // Sync data from Firebase to Room for offline access
                 syncDataAfterSignup()
 
                 _uiEvent.send(UIEvent.Navigate(HomeRoute))
@@ -144,17 +141,14 @@ class SignupViewModel(
         try {
             val userId = auth.currentUser?.uid ?: return
 
-            // Initialize Firebase repositories
             val firebaseDb = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
             val firebaseQuizRepo = QuizRepositoryImpl(firebaseDb)
             val firebaseHistoryRepo = HistoryRepositoryImpl(firebaseDb)
 
-            // Initialize Room repositories
             val roomQuestionRepo = QuestionRepositoryImpl(database.questionDao)
             val roomHistoryRepo = RoomHistoryRepositoryImpl(database.historyDao)
             val roomUserRepo = UserRepositoryImpl(database.userDao)
 
-            // Create sync repository
             val syncRepo = SyncRepository(
                 firebaseQuizRepository = firebaseQuizRepo,
                 firebaseHistoryRepository = firebaseHistoryRepo,
@@ -163,7 +157,6 @@ class SignupViewModel(
                 roomUserRepository = roomUserRepo
             )
 
-            // Sync quizzes (new users won't have history yet)
             Log.d("SignupViewModel", "Starting data sync...")
             syncRepo.syncQuizzes()
             Log.d("SignupViewModel", "Data sync completed successfully")

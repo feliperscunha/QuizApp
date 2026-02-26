@@ -95,7 +95,6 @@ class LoginViewModel(
                 }
                 auth.signInWithEmailAndPassword(email, password).await()
 
-                // Sync data from Firebase to Room for offline access
                 syncDataAfterLogin()
 
                 _uiEvent.send(UIEvent.Navigate(HomeRoute))
@@ -110,7 +109,7 @@ class LoginViewModel(
     }
 
     private suspend fun syncDataAfterLogin() {
-        // Only sync if database is provided (for testing, it might be null)
+
         database ?: run {
             Log.w("LoginViewModel", "Database not provided, skipping sync")
             return
@@ -119,17 +118,14 @@ class LoginViewModel(
         try {
             val userId = auth.currentUser?.uid ?: return
 
-            // Initialize Firebase repositories
             val firebaseDb = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
             val firebaseQuizRepo = QuizRepositoryImpl(firebaseDb)
             val firebaseHistoryRepo = HistoryRepositoryImpl(firebaseDb)
 
-            // Initialize Room repositories
             val roomQuestionRepo = QuestionRepositoryImpl(database.questionDao)
             val roomHistoryRepo = RoomHistoryRepositoryImpl(database.historyDao)
             val roomUserRepo = UserRepositoryImpl(database.userDao)
 
-            // Create sync repository
             val syncRepo = SyncRepository(
                 firebaseQuizRepository = firebaseQuizRepo,
                 firebaseHistoryRepository = firebaseHistoryRepo,
@@ -138,7 +134,6 @@ class LoginViewModel(
                 roomUserRepository = roomUserRepo
             )
 
-            // Sync quizzes and user history
             Log.d("LoginViewModel", "Starting data sync...")
             syncRepo.syncQuizzes()
             syncRepo.syncUserHistory(userId)
@@ -146,7 +141,6 @@ class LoginViewModel(
 
         } catch (e: Exception) {
             Log.e("LoginViewModel", "Error syncing data", e)
-            // Don't block login if sync fails
         }
     }
 }
