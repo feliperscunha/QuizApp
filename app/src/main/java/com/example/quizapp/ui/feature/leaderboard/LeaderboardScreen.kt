@@ -200,7 +200,7 @@ fun LeaderboardCard(
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "⏱️ ${String.format(Locale.getDefault(), "%.2f", entry.averageScore)}",
+                    text = "${String.format(Locale.getDefault(), "%.2f", entry.averageScore)}",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
