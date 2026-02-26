@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quizapp.data.firebase.history.HistoryRepository
+import com.example.quizapp.data.OfflineAwareHistoryRepository
 import com.example.quizapp.data.firebase.user.UserInfoRepository
 import com.example.quizapp.ui.UIEvent
 import com.google.firebase.database.FirebaseDatabase
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class LeaderboardViewModel(
-    private val historyRepository: HistoryRepository
+    private val historyRepository: OfflineAwareHistoryRepository
 ) : ViewModel() {
 
     var leaderboard by mutableStateOf<List<LeaderboardEntry>>(emptyList())

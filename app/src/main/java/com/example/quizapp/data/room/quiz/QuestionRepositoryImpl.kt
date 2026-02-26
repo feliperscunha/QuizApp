@@ -59,4 +59,21 @@ class QuestionRepositoryImpl(
             )
         }
     }
+
+    override suspend fun getByQuizId(quizId: String): List<Question> {
+        return dao.getByQuizId(quizId).map { entity ->
+            Question(
+                id = entity.id,
+                quizId = entity.quizId,
+                title = entity.title,
+                subtitle = entity.subtitle,
+                question = entity.question,
+                correctAnswer = entity.correctAnswer,
+                option1 = entity.option1,
+                option2 = entity.option2,
+                option3 = entity.option3,
+                option4 = entity.option4
+            )
+        }
+    }
 }

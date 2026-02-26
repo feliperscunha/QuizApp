@@ -8,8 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quizapp.data.firebase.history.HistoryRepository
-import com.example.quizapp.data.firebase.quiz.QuizRepository
+import com.example.quizapp.data.OfflineAwareHistoryRepository
+import com.example.quizapp.data.OfflineAwareQuizRepository
 import com.example.quizapp.domain.History
 import com.example.quizapp.domain.Quiz
 import com.example.quizapp.ui.UIEvent
@@ -21,8 +21,8 @@ import java.sql.Timestamp
 
 class QuizExecutionViewModel(
     private val quizId: String,
-    private val quizRepository: QuizRepository,
-    private val historyRepository: HistoryRepository
+    private val quizRepository: OfflineAwareQuizRepository,
+    private val historyRepository: OfflineAwareHistoryRepository
 ) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -56,6 +56,9 @@ class QuizExecutionViewModel(
         viewModelScope.launch {
             try {
                 quiz = quizRepository.getBy(quizId)
+                if (quiz == null) {
+                    _uiEvent.send(UIEvent.ShowSnackBar("Quiz not found"))
+                }
             } catch (e: Exception) {
                 Log.e("QuizExecutionViewModel", "Error loading quiz", e)
                 _uiEvent.send(UIEvent.ShowSnackBar("Error loading quiz"))
@@ -115,7 +118,7 @@ class QuizExecutionViewModel(
                 _uiEvent.send(UIEvent.ShowSnackBar("Quiz completed! Score: $score/${currentQuiz.questions.size}"))
             } catch (e: Exception) {
                 Log.e("QuizExecutionViewModel", "Error saving history", e)
-                _uiEvent.send(UIEvent.ShowSnackBar("Error saving results"))
+                _uiEvent.send(UIEvent.ShowSnackBar("Quiz completed but results saved offline"))
             }
         }
     }

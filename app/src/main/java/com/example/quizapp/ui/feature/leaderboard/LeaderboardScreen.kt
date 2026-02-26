@@ -32,10 +32,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.quizapp.data.OfflineAwareHistoryRepository
 import com.example.quizapp.data.firebase.history.HistoryRepositoryImpl
+import com.example.quizapp.data.room.QuizAppDatabase
+import com.example.quizapp.data.room.history.HistoryRepositoryImpl as RoomHistoryRepositoryImpl
 import com.example.quizapp.ui.UIEvent
 import com.google.firebase.database.FirebaseDatabase
 import java.util.Locale
@@ -44,11 +50,26 @@ import java.util.Locale
 fun LeaderboardScreen(
     navigateBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
-    val repository = HistoryRepositoryImpl(db = db)
-    val viewModel = viewModel<LeaderboardViewModel> {
-        LeaderboardViewModel(historyRepository = repository)
-    }
+    val firebaseRepository = HistoryRepositoryImpl(db = db)
+
+    val database = QuizAppDatabase.getInstance(context)
+    val roomRepository = RoomHistoryRepositoryImpl(database.historyDao)
+
+    val repository = OfflineAwareHistoryRepository(
+        context = context,
+        firebaseRepository = firebaseRepository,
+        roomRepository = roomRepository
+    )
+
+    val viewModel: LeaderboardViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer {
+                LeaderboardViewModel(historyRepository = repository)
+            }
+        }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->

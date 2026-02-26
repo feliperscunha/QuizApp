@@ -10,4 +10,6 @@ interface QuestionRepository {
     fun getAll(): Flow<List<Question>>
 
     suspend fun getBy(id: String): Question?
+
+    suspend fun getByQuizId(quizId: String): List<Question>
 }

@@ -26,7 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.quizapp.data.OfflineAwareHistoryRepository
 import com.example.quizapp.data.firebase.history.HistoryRepositoryImpl
+import com.example.quizapp.data.room.QuizAppDatabase
+import com.example.quizapp.data.room.history.HistoryRepositoryImpl as RoomHistoryRepositoryImpl
 import com.example.quizapp.ui.UIEvent
 import com.google.firebase.database.FirebaseDatabase
 
@@ -34,11 +39,26 @@ import com.google.firebase.database.FirebaseDatabase
 fun StatisticsScreen(
     navigateBack: () -> Unit
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
-    val repository = HistoryRepositoryImpl(db = db)
-    val viewModel = viewModel<StatisticsViewModel> {
-        StatisticsViewModel(historyRepository = repository)
-    }
+    val firebaseRepository = HistoryRepositoryImpl(db = db)
+
+    val database = QuizAppDatabase.getInstance(context)
+    val roomRepository = RoomHistoryRepositoryImpl(database.historyDao)
+
+    val repository = OfflineAwareHistoryRepository(
+        context = context,
+        firebaseRepository = firebaseRepository,
+        roomRepository = roomRepository
+    )
+
+    val viewModel: StatisticsViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer {
+                StatisticsViewModel(historyRepository = repository)
+            }
+        }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->

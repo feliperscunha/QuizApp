@@ -14,7 +14,8 @@ class HistoryRepositoryImpl(
             quizId = history.quizId,
             score = history.score,
             time = history.time,
-            date = history.date
+            date = history.date,
+            syncedToFirebase = false
         )
 
         dao.insert(entity)
@@ -46,5 +47,52 @@ class HistoryRepositoryImpl(
                 date = entity.date
             )
         }
+    }
+
+    override fun getAllByUser(userId: String): Flow<List<History>> {
+        return dao.getAllByUser(userId).map { entities ->
+            entities.map { entity ->
+                History(
+                    id = entity.id,
+                    quizId = entity.quizId,
+                    userId = entity.userId,
+                    score = entity.score,
+                    time = entity.time,
+                    date = entity.date
+                )
+            }
+        }
+    }
+
+    override fun getUserQuizHistory(userId: String, quizId: String): Flow<List<History>> {
+        return dao.getUserQuizHistory(userId, quizId).map { entities ->
+            entities.map { entity ->
+                History(
+                    id = entity.id,
+                    quizId = entity.quizId,
+                    userId = entity.userId,
+                    score = entity.score,
+                    time = entity.time,
+                    date = entity.date
+                )
+            }
+        }
+    }
+
+    override suspend fun getUnsyncedEntries(): List<History> {
+        return dao.getUnsyncedEntries().map { entity ->
+            History(
+                id = entity.id,
+                quizId = entity.quizId,
+                userId = entity.userId,
+                score = entity.score,
+                time = entity.time,
+                date = entity.date
+            )
+        }
+    }
+
+    override suspend fun markAsSynced(id: String) {
+        dao.markAsSynced(id)
     }
 }

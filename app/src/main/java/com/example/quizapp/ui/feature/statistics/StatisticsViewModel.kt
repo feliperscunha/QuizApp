@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quizapp.data.firebase.history.HistoryRepository
+import com.example.quizapp.data.OfflineAwareHistoryRepository
 import com.example.quizapp.ui.UIEvent
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class StatisticsViewModel(
-    private val historyRepository: HistoryRepository
+    private val historyRepository: OfflineAwareHistoryRepository
 ) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()

@@ -3,7 +3,7 @@ package com.example.quizapp.ui.feature.history
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quizapp.data.firebase.history.HistoryRepository
+import com.example.quizapp.data.OfflineAwareHistoryRepository
 import com.example.quizapp.ui.UIEvent
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.Channel
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HistoryViewModel(
-    private val historyRepository: HistoryRepository
+    private val historyRepository: OfflineAwareHistoryRepository
 ) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()

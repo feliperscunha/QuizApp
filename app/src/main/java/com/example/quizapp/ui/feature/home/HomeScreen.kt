@@ -30,10 +30,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.quizapp.data.OfflineAwareQuizRepository
 import com.example.quizapp.data.firebase.quiz.QuizRepositoryImpl
+import com.example.quizapp.data.room.QuizAppDatabase
+import com.example.quizapp.data.room.quiz.QuestionRepositoryImpl
 import com.example.quizapp.domain.Quiz
 import com.google.firebase.database.FirebaseDatabase
 
@@ -45,12 +51,26 @@ fun HomeScreen(
     navigateToLeaderboard: () -> Unit,
     navigateToLogin: () -> Unit
 ) {
-
+    val context = LocalContext.current
     val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
-    val repository = QuizRepositoryImpl(db = db)
-    val viewModel = viewModel<HomeViewModel> {
-        HomeViewModel(quizRepository = repository)
-    }
+    val firebaseRepository = QuizRepositoryImpl(db = db)
+
+    val database = QuizAppDatabase.getInstance(context)
+    val roomRepository = QuestionRepositoryImpl(database.questionDao)
+
+    val offlineAwareRepository = OfflineAwareQuizRepository(
+        context = context,
+        firebaseRepository = firebaseRepository,
+        roomRepository = roomRepository
+    )
+
+    val viewModel: HomeViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer {
+                HomeViewModel(quizRepository = offlineAwareRepository)
+            }
+        }
+    )
 
     val quizzes by viewModel.quizzes.collectAsState()
 

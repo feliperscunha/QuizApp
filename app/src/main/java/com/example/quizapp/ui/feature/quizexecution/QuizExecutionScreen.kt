@@ -32,11 +32,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.quizapp.data.OfflineAwareHistoryRepository
+import com.example.quizapp.data.OfflineAwareQuizRepository
 import com.example.quizapp.data.firebase.history.HistoryRepositoryImpl
 import com.example.quizapp.data.firebase.quiz.QuizRepositoryImpl
+import com.example.quizapp.data.room.QuizAppDatabase
+import com.example.quizapp.data.room.history.HistoryRepositoryImpl as RoomHistoryRepositoryImpl
+import com.example.quizapp.data.room.quiz.QuestionRepositoryImpl
 import com.example.quizapp.ui.UIEvent
 import com.google.firebase.database.FirebaseDatabase
 
@@ -45,17 +54,38 @@ fun QuizExecutionScreen(
     quizId: String,
     navigateBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val db = FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
-    val quizRepository = QuizRepositoryImpl(db = db)
-    val historyRepository = HistoryRepositoryImpl(db = db)
+    val firebaseQuizRepository = QuizRepositoryImpl(db = db)
+    val firebaseHistoryRepository = HistoryRepositoryImpl(db = db)
 
-    val viewModel = viewModel<QuizExecutionViewModel> {
-        QuizExecutionViewModel(
-            quizId = quizId,
-            quizRepository = quizRepository,
-            historyRepository = historyRepository
-        )
-    }
+    val database = QuizAppDatabase.getInstance(context)
+    val roomQuestionRepository = QuestionRepositoryImpl(database.questionDao)
+    val roomHistoryRepository = RoomHistoryRepositoryImpl(database.historyDao)
+
+    val offlineAwareQuizRepository = OfflineAwareQuizRepository(
+        context = context,
+        firebaseRepository = firebaseQuizRepository,
+        roomRepository = roomQuestionRepository
+    )
+
+    val offlineAwareHistoryRepository = OfflineAwareHistoryRepository(
+        context = context,
+        firebaseRepository = firebaseHistoryRepository,
+        roomRepository = roomHistoryRepository
+    )
+
+    val viewModel: QuizExecutionViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer {
+                QuizExecutionViewModel(
+                    quizId = quizId,
+                    quizRepository = offlineAwareQuizRepository,
+                    historyRepository = offlineAwareHistoryRepository
+                )
+            }
+        }
+    )
 
     val snackbarHostState = remember { SnackbarHostState() }
 

@@ -10,4 +10,12 @@ interface HistoryRepository {
     fun getAll(): Flow<List<History>>
 
     suspend fun getBy(id: String): History?
+
+    fun getAllByUser(userId: String): Flow<List<History>>
+
+    fun getUserQuizHistory(userId: String, quizId: String): Flow<List<History>>
+
+    suspend fun getUnsyncedEntries(): List<History>
+
+    suspend fun markAsSynced(id: String)
 }

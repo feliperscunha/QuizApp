@@ -15,6 +15,16 @@ import com.google.firebase.database.FirebaseDatabase
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Enable Firebase offline persistence
+        try {
+            FirebaseDatabase.getInstance("https://quizapp-88330-default-rtdb.firebaseio.com/")
+                .setPersistenceEnabled(true)
+            Log.d("MainActivity", "Firebase offline persistence enabled")
+        } catch (e: Exception) {
+            Log.w("MainActivity", "Firebase persistence already enabled or failed", e)
+        }
+
         enableEdgeToEdge()
         setContent {
             Box (

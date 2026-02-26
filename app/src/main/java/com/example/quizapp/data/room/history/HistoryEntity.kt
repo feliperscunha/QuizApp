@@ -11,5 +11,6 @@ data class HistoryEntity(
     val quizId: String,
     val score: Int,
     val time: Double,
-    val date: String = Timestamp(System.currentTimeMillis()).toString()
+    val date: String = Timestamp(System.currentTimeMillis()).toString(),
+    val syncedToFirebase: Boolean = false
 )

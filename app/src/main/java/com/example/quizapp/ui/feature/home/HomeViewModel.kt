@@ -3,7 +3,7 @@ package com.example.quizapp.ui.feature.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quizapp.data.firebase.quiz.QuizRepository
+import com.example.quizapp.data.OfflineAwareQuizRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(
-    quizRepository: QuizRepository
+    quizRepository: OfflineAwareQuizRepository
 ) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()

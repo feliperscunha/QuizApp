@@ -13,13 +13,32 @@ import com.example.quizapp.data.room.user.UserEntity
 
 @Database(
     entities = [UserEntity::class, QuestionEntity::class, HistoryEntity::class],
-    version = 2
+    version = 3
 )
 abstract class QuizAppDatabase : RoomDatabase() {
 
     abstract val questionDao: QuestionDao
     abstract val userDao: UserDao
     abstract val historyDao: HistoryDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: QuizAppDatabase? = null
+
+        fun getInstance(context: Context): QuizAppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    QuizAppDatabase::class.java,
+                    "quiz-app"
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }
 
 object UserDatabaseProvider {

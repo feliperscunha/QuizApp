@@ -18,4 +18,7 @@ interface QuestionDao {
 
     @Query("SELECT * FROM questions WHERE id = :id")
     suspend fun getBy (id: String): QuestionEntity?
+
+    @Query("SELECT * FROM questions WHERE quizId = :quizId ORDER BY id ASC")
+    suspend fun getByQuizId(quizId: String): List<QuestionEntity>
 }
