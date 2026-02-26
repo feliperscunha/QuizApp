@@ -190,7 +190,7 @@ fun LeaderboardCard(
                 )
 
                 Text(
-                    text = "✓ ${String.format(Locale.getDefault(), "%.1f", entry.averageScore)} pts",
+                    text = "✓ ${String.format(Locale.getDefault(), "%.1f", entry.totalScore)} pts",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -200,13 +200,13 @@ fun LeaderboardCard(
 
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = entry.totalScore.toString(),
+                    text = entry.averageScore.toString(),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "pontos",
+                    text = "média",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

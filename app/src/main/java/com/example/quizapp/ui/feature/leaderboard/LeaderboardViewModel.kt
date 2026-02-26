@@ -77,7 +77,7 @@ class LeaderboardViewModel(
                     }
 
                     val sortedStats = userStatsWithUsername
-                        .sortedByDescending { it.totalScore }
+                        .sortedByDescending { it.averageScore }
                         .mapIndexed { index, entry ->
                             entry.copy(rank = index + 1)
                         }
@@ -102,4 +102,3 @@ class LeaderboardViewModel(
         }
     }
 }
-
